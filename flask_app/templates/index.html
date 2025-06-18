@@ -1,0 +1,287 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document Tampering Detection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        input[type="file"] {
+            margin: 10px 0;
+        }
+
+        input[type="submit"] {
+            padding: 8px 16px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        .results-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 40px;
+            flex-wrap: nowrap;
+            margin-top: 30px;
+        }
+
+        .image-card {
+            background: white;
+            padding: 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            width: 45%;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        .section-title {
+            background: linear-gradient(135deg, #007BFF 0%, #00BFFF 100%);
+            color: white;
+            padding: 12px 0;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 8px 8px 0 0;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            border-top: 1px solid #ddd;
+            display: block;
+        }
+
+        @media (max-width: 900px) {
+            .results-container {
+                flex-wrap: wrap;
+            }
+
+            .image-card {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Document Tampering Detection System</h1>
+    <form method="POST" enctype="multipart/form-data">
+        <input type="file" name="image" accept="image/*" required><br>
+        <input type="submit" value="Upload & Detect">
+    </form>
+
+    {% if stitched_image_path or bbox_image_path %}
+    <div class="results-container">
+        {% if stitched_image_path %}
+        <div class="image-card">
+            <div class="section-title">Original Image</div>
+            <img src="{{ stitched_image_path }}" alt="Original Image">
+        </div>
+        {% endif %}
+
+        {% if bbox_image_path %}
+        <div class="image-card">
+            <div class="section-title">Image With Bounding Box</div>
+            <img src="{{ bbox_image_path }}" alt="Image With Bounding Box">
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document Tampering Detection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        input[type="file"] {
+            margin: 10px 0;
+        }
+
+        input[type="submit"] {
+            padding: 8px 16px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        /* NEW: Reason legend styles */
+        .legend-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin: 30px auto;
+            max-width: 800px;
+            text-align: left;
+        }
+
+        .legend-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #007BFF;
+            text-align: center;
+        }
+
+        .legend-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            background: #f9f9f9;
+            padding: 8px 15px;
+            border-radius: 5px;
+            border-left: 4px solid #007BFF;
+        }
+
+        .legend-number {
+            font-weight: bold;
+            color: #007BFF;
+            margin-right: 10px;
+            font-size: 18px;
+        }
+
+        .results-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 40px;
+            flex-wrap: nowrap;
+            margin-top: 30px;
+        }
+
+        .image-card {
+            background: white;
+            padding: 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            width: 45%;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        .section-title {
+            background: linear-gradient(135deg, #007BFF 0%, #00BFFF 100%);
+            color: white;
+            padding: 12px 0;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 8px 8px 0 0;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            border-top: 1px solid #ddd;
+            display: block;
+        }
+
+        @media (max-width: 900px) {
+            .results-container {
+                flex-wrap: wrap;
+            }
+
+            .image-card {
+                width: 90%;
+            }
+            
+            /* Responsive legend */
+            .legend-grid {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Document Tampering Detection System</h1>
+    <form method="POST" enctype="multipart/form-data">
+        <input type="file" name="image" accept="image/*" required><br>
+        <input type="submit" value="Upload & Detect">
+    </form>
+
+    {% if reason_legend %}
+    <!-- NEW: Reason Legend Section -->
+    <div class="legend-container">
+        <div class="legend-title">Reason Legend</div>
+        <div class="legend-grid">
+            {% for reason, number in reason_legend.items() %}
+            <div class="legend-item">
+                <span class="legend-number">{{ number }}.</span>
+                <span class="legend-reason">{{ reason }}</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if stitched_image_path or bbox_image_path %}
+    <div class="results-container">
+        {% if stitched_image_path %}
+        <div class="image-card">
+            <div class="section-title">Original Image</div>
+            <img src="{{ stitched_image_path }}" alt="Original Image">
+        </div>
+        {% endif %}
+
+        {% if bbox_image_path %}
+        <div class="image-card">
+            <div class="section-title">Image With Bounding Box</div>
+            <img src="{{ bbox_image_path }}" alt="Image With Bounding Box">
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+</body>
+</html>
